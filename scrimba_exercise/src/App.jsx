@@ -12,7 +12,6 @@ export default function App() {
 
 	React.useEffect(() => {
 		localStorage.setItem('notes', JSON.stringify(notes));
-		console.log(notes);
 	}, [notes]);
 
 	const [currentNoteId, setCurrentNoteId] = React.useState(
@@ -25,7 +24,7 @@ export default function App() {
 			body: '# title here',
 		};
 
-		setNotes(prevNotes => [newNote], ...prevNotes);
+		setNotes(prevNotes => [newNote, ...prevNotes]);
 		setCurrentNoteId(newNote.id);
 	}
 
@@ -42,6 +41,12 @@ export default function App() {
 			}
 			return newArray;
 		});
+	}
+
+	function deleteNote(e, noteId) {
+		e.stopPropagation();
+		const newArray = notes.filter(note => note.id !== noteId);
+		setNotes(newArray);
 	}
 
 	function findCurrentNote() {
@@ -65,6 +70,7 @@ export default function App() {
 						currentNote={findCurrentNote()}
 						setCurrentNoteId={setCurrentNoteId}
 						newNote={createNewNote}
+						deleteNote={deleteNote}
 					/>
 					{currentNoteId && notes.length > 0 && (
 						<Editor
