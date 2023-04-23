@@ -17,7 +17,14 @@ export default function App() {
 	 *    into a real JS array.
 	 */
 
-	const [notes, setNotes] = React.useState([]); // /*Your code here*/ ||
+	const [notes, setNotes] = React.useState(() => {
+		return JSON.parse(localStorage.getItem('notes')) || [];
+	});
+
+	React.useEffect(() => {
+		localStorage.setItem('notes', JSON.stringify(notes));
+	}, [notes]);
+
 	const [currentNoteId, setCurrentNoteId] = React.useState(
 		(notes[0] && notes[0].id) || ''
 	);
@@ -27,6 +34,7 @@ export default function App() {
 			id: nanoid(),
 			body: "# Type your markdown note's title here",
 		};
+
 		setNotes(prevNotes => [newNote, ...prevNotes]);
 		setCurrentNoteId(newNote.id);
 	}
