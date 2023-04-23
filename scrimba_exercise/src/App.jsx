@@ -12,6 +12,7 @@ export default function App() {
 
 	React.useEffect(() => {
 		localStorage.setItem('notes', JSON.stringify(notes));
+		console.log(notes);
 	}, [notes]);
 
 	const [currentNoteId, setCurrentNoteId] = React.useState(
@@ -21,21 +22,26 @@ export default function App() {
 	function createNewNote() {
 		const newNote = {
 			id: nanoid(),
-			body: "# Type your markdown note's title here",
+			body: '# title here',
 		};
 
-		setNotes(prevNotes => [newNote, ...prevNotes]);
+		setNotes(prevNotes => [newNote], ...prevNotes);
 		setCurrentNoteId(newNote.id);
 	}
 
 	function updateNote(text) {
-		setNotes(oldNotes =>
-			oldNotes.map(oldNote => {
-				return oldNote.id === currentNoteId
-					? { ...oldNote, body: text }
-					: oldNote;
-			})
-		);
+		setNotes(oldNotes => {
+			const newArray = [];
+			for (let i = 0; i < oldNotes.length; i++) {
+				const oldNote = oldNotes[i];
+				if (oldNote.id === currentNoteId) {
+					newArray.unshift({ ...oldNote, body: text });
+				} else {
+					newArray.push(oldNote);
+				}
+			}
+			return newArray;
+		});
 	}
 
 	function findCurrentNote() {
